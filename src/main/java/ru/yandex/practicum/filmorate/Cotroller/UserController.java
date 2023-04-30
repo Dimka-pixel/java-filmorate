@@ -19,9 +19,9 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class UserController {
 
     private static int id;
-    final private HashMap<Integer, User> users = new HashMap<>();
+    private HashMap<Integer, User> users = new HashMap<>();
 
-    private final static Logger log = LoggerFactory.getLogger(UserController.class);
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
     public List<User> getUsers() {
