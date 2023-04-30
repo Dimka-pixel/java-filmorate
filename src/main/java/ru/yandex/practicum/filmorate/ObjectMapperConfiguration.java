@@ -13,7 +13,7 @@ import java.time.Duration;
 @Configuration
 public class ObjectMapperConfiguration {
     @Bean
-    public SimpleModule DurationSerialize() throws IOException {
+    public SimpleModule durationSerialize() throws IOException {
         SimpleModule module = new SimpleModule();
         module.addSerializer(new JsonSerializer<Duration>() {
             @Override
