@@ -19,9 +19,9 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class FilmController {
     private static int id;
 
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+    private final Logger log = LoggerFactory.getLogger(FilmController.class);
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
+    private HashMap<Integer, Film> films = new HashMap<>();
 
     @GetMapping("/films")
     public List<Film> getFilms() {
