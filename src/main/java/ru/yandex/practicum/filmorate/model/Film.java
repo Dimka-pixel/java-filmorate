@@ -12,10 +12,10 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class Film {
     @NotBlank
-    final private String name;
-    final private LocalDate releaseDate;
-    final private Duration duration;
+    private final String name;
+    private final LocalDate releaseDate;
+    private final Duration duration;
     @Max(200)
-    final private String description;
+    private final String description;
     private int id;
 }
