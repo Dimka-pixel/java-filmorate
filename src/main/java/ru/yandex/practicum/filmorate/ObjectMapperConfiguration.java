@@ -30,4 +30,5 @@ public class ObjectMapperConfiguration {
         return module;
 
     }
+
 }
