@@ -85,18 +85,26 @@ class UserServiceManagerTest {
     @Test
     void shouldUpdateUserAssignValueLoginForNameIfNameEqualNull() {
         User user = new User("qwerty@mail.ru", "login", LocalDate.of(1987, 4, 9));
-        manager.updateUser(user);
+        user.setName("name");
+        manager.addUser(user);
+        User user2 = new User("qwerty@mail.ru", "login", LocalDate.of(1987, 4, 9));
+        user2.setId(1);
+        manager.updateUser(user2);
 
-        assertEquals("login", user.getName());
+        assertEquals("login", manager.getUsers().get(0).getName());
     }
 
     @Test
     void shouldUpdateUserAssignValueLoginForNameIfNameIsEmpty() {
         User user = new User("qwerty@mail.ru", "login", LocalDate.of(1987, 4, 9));
-        user.setName("");
-        manager.updateUser(user);
+        user.setName("name");
+        manager.addUser(user);
+        User user2 = new User("qwerty@mail.ru", "login", LocalDate.of(1987, 4, 9));
+        user2.setName("");
+        user2.setId(1);
+        manager.updateUser(user2);
 
-        assertEquals("login", user.getName());
+        assertEquals("login", manager.getUsers().get(0).getName());
     }
 
 

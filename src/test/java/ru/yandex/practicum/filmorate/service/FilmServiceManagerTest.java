@@ -65,17 +65,23 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionForUpdateFilmIfDateReleaseBefore18951228() {
-        Film film = new Film("Боевик", LocalDate.of(1800, 2, 3), Duration.ofMinutes(100), "Интересный");
+        Film film = new Film("Боевик", LocalDate.of(1900, 2, 3), Duration.ofMinutes(100), "Интересный");
+        manager.addFilm(film);
+        Film film2 = new Film("Update", LocalDate.of(1800, 2, 3), Duration.ofMinutes(100), "Интересный");
+        film2.setId(1);
         final ValidationException exception = assertThrows(ValidationException.class,
-                () -> manager.updateFilm(film));
+                () -> manager.updateFilm(film2));
         assertEquals("дата релиза не может быть ранее 28 декабря 1895", exception.getErrorMessage());
     }
 
     @Test
     void shouldReturnValidationExceptionForUpdateFilmIfDurationLessZero() {
-        Film film = new Film("Боевик", LocalDate.of(1900, 2, 3), Duration.ofMinutes(-100), "Интересный");
+        Film film = new Film("Боевик", LocalDate.of(1900, 2, 3), Duration.ofMinutes(100), "Интересный");
+        manager.addFilm(film);
+        Film film2 = new Film("Update", LocalDate.of(1900, 2, 3), Duration.ofMinutes(-100), "Интересный");
+        film2.setId(1);
         final ValidationException exception = assertThrows(ValidationException.class,
-                () -> manager.updateFilm(film));
+                () -> manager.updateFilm(film2));
         assertEquals("Продолжительность не может быть отрицательной", exception.getErrorMessage());
     }
 
