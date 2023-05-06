@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.Exception;
+package ru.yandex.practicum.filmorate.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

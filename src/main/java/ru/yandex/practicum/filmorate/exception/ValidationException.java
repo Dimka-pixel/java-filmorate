@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.Exception;
+package ru.yandex.practicum.filmorate.exception;
 
 import org.springframework.http.HttpStatus;
 
@@ -10,7 +10,6 @@ public class ValidationException extends RuntimeException {
         this.errorMessage = errorMessage;
         this.status = status;
     }
-
 
     public String getErrorMessage() {
         return errorMessage;
