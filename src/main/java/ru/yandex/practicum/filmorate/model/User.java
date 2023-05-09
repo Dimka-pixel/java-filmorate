@@ -8,6 +8,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 @RequiredArgsConstructor
@@ -22,5 +24,6 @@ public class User {
     private final LocalDate birthday;
     private int id;
     private String name;
+    private Set<Integer> friends = new TreeSet<>();
 
 }

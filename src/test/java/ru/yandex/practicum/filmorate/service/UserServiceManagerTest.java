@@ -2,8 +2,11 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 
@@ -12,10 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceManagerTest {
     private UserServiceManager manager;
+    private UserStorage userStorage;
 
     @BeforeEach
+    @Autowired
     void beforeEach() {
-        manager = new UserServiceManager();
+        userStorage = new InMemoryUserStorage();
+        manager = new UserServiceManager(userStorage);
     }
 
     @Test
