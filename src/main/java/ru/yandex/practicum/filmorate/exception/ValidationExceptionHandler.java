@@ -17,5 +17,4 @@ public class ValidationExceptionHandler {
                 .body(Map.of("errorMessage", ex.getErrorMessage()));
     }
 
-
 }

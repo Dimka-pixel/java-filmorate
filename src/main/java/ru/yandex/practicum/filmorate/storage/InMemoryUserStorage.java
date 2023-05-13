@@ -8,15 +8,20 @@ import java.util.HashMap;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private HashMap<Integer,User> users = new HashMap<>();
+    private HashMap<Integer, User> users = new HashMap<>();
 
     @Override
     public void addUser(User user) {
-        users.put(user.getId(),user);
+        users.put(user.getId(), user);
     }
 
     @Override
-    public HashMap getUsers() {
+    public User getUserById(int id) {
+        return users.get(id);
+    }
+
+    @Override
+    public HashMap<Integer, User> getUsers() {
         return users;
     }
 
