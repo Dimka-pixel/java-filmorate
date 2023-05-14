@@ -32,7 +32,7 @@ public class UserServiceManager {
     }
 
     public void addUser(User user) {
-        if (user.getName()==null||user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("Полю name было присвоено значение поля login");
         }
@@ -46,7 +46,7 @@ public class UserServiceManager {
         if (!(userStorage.getUsers().containsKey(user.getId()))) {
             log.warn("User с ID: " + user.getId() + " не найден");
             throw new ValidationException("User с ID: " + user.getId() + " не найден", NOT_FOUND);
-        } else if (user.getName()==null||user.getName().isBlank()) {
+        } else if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("Полю name было присвоено значение поля login");
             userStorage.addUser(user);
