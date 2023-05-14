@@ -24,8 +24,6 @@ public class UserServiceManager {
 
     private int id;
 
-    public Set<User> friends = new HashSet<>();
-
     @Autowired
     public UserServiceManager(UserStorage userStorage) {
         this.userStorage = userStorage;
