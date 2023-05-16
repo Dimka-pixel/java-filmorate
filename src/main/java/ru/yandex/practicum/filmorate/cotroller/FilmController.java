@@ -25,7 +25,7 @@ public class FilmController {
     @GetMapping("/films")
     public List<Film> getFilms() {
         log.info("Получен запрос GET/films");
-        return manager.getFilms();
+        return manager.getAllFilms();
     }
 
     @GetMapping("/films/{id}")

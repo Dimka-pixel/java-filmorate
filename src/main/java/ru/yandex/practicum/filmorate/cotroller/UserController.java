@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping("/users")
     public List<User> getUsers() {
         log.info("Получен запрос GET/users");
-        return manager.getUsers();
+        return manager.getAllUsers();
     }
 
     @GetMapping("/users/{id}")

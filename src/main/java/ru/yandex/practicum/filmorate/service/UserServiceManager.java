@@ -20,54 +20,25 @@ public class UserServiceManager {
 
     private final Logger log = LoggerFactory.getLogger(UserServiceManager.class);
 
-    private int id;
-
     @Autowired
     public UserServiceManager(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
     public void addUser(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.info("Полю name было присвоено значение поля login");
-        }
-        id++;
-        user.setId(id);
         userStorage.addUser(user);
-        log.info("User ID: " + user.getId() + " успешно добавлен");
     }
 
     public void updateUser(User user) {
-        if (!(userStorage.getUsers().containsKey(user.getId()))) {
-            log.warn("User с ID: " + user.getId() + " не найден");
-            throw new ValidationException("User с ID: " + user.getId() + " не найден", NOT_FOUND);
-        } else if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.info("Полю name было присвоено значение поля login");
-            userStorage.addUser(user);
-            log.info("User ID: " + user.getId() + " успешно обновлён");
-        } else {
-            userStorage.addUser(user);
-            log.info("User ID: " + user.getId() + " успешно обновлён");
-        }
-
+        userStorage.updateUser(user);
     }
 
     public User getUserById(int id) {
-        if (!(userStorage.getUsers().containsKey(id)) || userStorage.getUsers().isEmpty() || userStorage.getUserById(id) == null) {
-            log.warn("ValidationException: объекта нет в списке");
-            throw new ValidationException("User с ID " + id + " не найден", NOT_FOUND);
-        } else {
-            return userStorage.getUserById(id);
-        }
-
+        return userStorage.getUserById(id);
     }
 
-    public List<User> getUsers() {
-        List<User> usersList = new ArrayList<>(userStorage.getUsers().values());
-        log.info("список пользователей отправлен");
-        return usersList;
+    public List<User> getAllUsers() {
+        return userStorage.getAllUsers();
     }
 
     public void addFriend(int userId, int friendId) {

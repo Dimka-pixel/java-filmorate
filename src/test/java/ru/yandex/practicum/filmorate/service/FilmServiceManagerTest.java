@@ -37,7 +37,7 @@ class FilmServiceManagerTest {
         manager.addFilm(film);
 
         assertEquals(1, film.getId());
-        assertEquals(film, manager.getFilms().get(0));
+        assertEquals(film, manager.getAllFilms().get(0));
     }
 
     @Test
@@ -81,7 +81,7 @@ class FilmServiceManagerTest {
         film2.setId(1);
         manager.updateFilm(film2);
 
-        assertEquals("Update", manager.getFilms().get(0).getName());
+        assertEquals("Update", manager.getAllFilms().get(0).getName());
     }
 
     @Test
