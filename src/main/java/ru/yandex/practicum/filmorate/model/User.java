@@ -1,26 +1,27 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
-@RequiredArgsConstructor
 public class User {
     @Email
     @NotBlank
-    private final String email;
+    private String email;
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9]{6,12}$")
-    private final String login;
+    private String login;
     @PastOrPresent
-    private final LocalDate birthday;
+    private LocalDate birthday;
     private int id;
     private String name;
+    private Set<Integer> friends = new TreeSet<>();
 
 }
