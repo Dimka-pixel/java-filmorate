@@ -3,12 +3,14 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage.UserStorage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,39 +19,48 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class FilmServiceManager {
-
+    @Autowired
+    @Qualifier("FilmDb")
     private final FilmStorage filmStorage;
 
+    @Autowired
+    @Qualifier("db")
     private final UserStorage userStorage;
 
     private final Logger log = LoggerFactory.getLogger(FilmServiceManager.class);
 
-    @Autowired
     public FilmServiceManager(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }
 
-    public void addFilm(Film film) {
-        filmStorage.addFilm(film);
+    public int addFilm(Film film) {
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            log.warn("ValidationException: Не корректная дата релиза");
+            throw new ValidationException("Дата релиза не может быть ранее 28 декабря 1895", BAD_REQUEST);
+        } else if (film.getDuration().toMinutes() <= 0) {
+            log.warn("Продолжительность фильма отрицательная");
+            throw new ValidationException("Продолжительность не может быть отрицательной", BAD_REQUEST);
+        }
+        return filmStorage.addObject(film);
     }
 
     public void updateFilm(Film film) {
-        filmStorage.updateFilm(film);
+        filmStorage.updateObject(film);
     }
 
     public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        return filmStorage.getAllObjects();
 
     }
 
     public Film getFilmById(int id) {
-        if (filmStorage.getFilmById(id) == null) {
+        if (filmStorage.getObjectById(id) == null) {
             log.warn("ValidationException: объекта нет в списке");
             throw new ValidationException("Фильм с ID " + id + " не найден", NOT_FOUND);
         } else {
             log.info("Фильм ID " + id + "отправлен");
-            return filmStorage.getFilmById(id);
+            return filmStorage.getObjectById(id);
         }
 
     }
@@ -97,23 +108,13 @@ public class FilmServiceManager {
     }
 
     public void putLike(int userId, int filmId) {
-        if (!(userStorage.getUsers().containsKey(userId))) {
-            log.warn("Передан не корректный UserId " + userId);
-            throw new ValidationException("User c id " + userId + " не найден", NOT_FOUND);
-        }
-        if (!(filmStorage.getFilms().containsKey(filmId))) {
-            log.warn("Передан не корректный filmId " + filmId);
-            throw new ValidationException("Film c id " + filmId + " не найден", NOT_FOUND);
-        }
+        filmStorage.addLike(userId, filmId);
         log.info("Лайк добавлен");
-        getFilmById(filmId).getLikes().add(userId);
     }
 
     public void deleteLike(int filmId, int userId) {
-        if (!(filmStorage.getFilms().containsKey(filmId))) {
-            log.warn("Film c ID " + filmId + " не найден");
-            throw new ValidationException("Film c ID " + filmId + " не найден", NOT_FOUND);
-        } else if (!(filmStorage.getFilmById(filmId).getLikes().contains(userId))) {
+        Film filmLike = getFilmById(filmId);
+        if (!(filmLike.getLikes().contains(userId))) {
             log.warn("Like c userId " + userId + " не найден");
             throw new ValidationException("Like c userId " + userId + " не найден", NOT_FOUND);
         } else {

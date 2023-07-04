@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@Component
+@Component("memory")
 public class InMemoryUserStorage implements UserStorage {
 
     private int id;
@@ -22,7 +22,7 @@ public class InMemoryUserStorage implements UserStorage {
     private HashMap<Integer, User> users = new HashMap<>();
 
     @Override
-    public void addUser(User user) {
+    public int addObject(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("Полю name было присвоено значение поля login");
@@ -31,11 +31,11 @@ public class InMemoryUserStorage implements UserStorage {
         user.setId(id);
         users.put(user.getId(), user);
         log.info("User ID: " + user.getId() + " успешно добавлен");
-
+        return id;
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateObject(User user) {
         if (!(users.containsKey(user.getId()))) {
             log.warn("User с ID: " + user.getId() + " не найден");
             throw new ValidationException("User с ID: " + user.getId() + " не найден", NOT_FOUND);
@@ -64,7 +64,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getObjectById(int id) {
         if (users.get(id) == null) {
             log.warn("ValidationException: объекта нет в списке");
             throw new ValidationException("User с ID " + id + " не найден", NOT_FOUND);
@@ -75,7 +75,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAllObjects() {
         List<User> usersList = new ArrayList<>(users.values());
         log.info("список пользователей отправлен");
         return usersList;
@@ -83,12 +83,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public HashMap<Integer, User> getUsers() {
-        return users;
+    public void deleteObject(int id) {
+        users.remove(id);
     }
 
     @Override
-    public void deleteUser(int id) {
-        users.remove(id);
+    public void addFriend(int userId, int friendId) {
+
     }
 }

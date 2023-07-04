@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-@Component
+@Component("mem")
 public class InMemoryFilmStorage implements FilmStorage {
 
     private int id;
@@ -25,7 +25,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final HashMap<Integer, Film> films = new HashMap<>();
 
     @Override
-    public void addFilm(Film film) {
+    public int addObject(Film film) {
         if (film.getReleaseDate() != null && film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             log.warn("ValidationException: Не корректная дата релиза");
             throw new ValidationException("дата релиза не может быть ранее 28 декабря 1895", BAD_REQUEST);
@@ -40,10 +40,11 @@ public class InMemoryFilmStorage implements FilmStorage {
                 log.info("addFilm: добавлен новый фильм id:" + film.getId());
             }
         }
+        return id;
     }
 
     @Override
-    public void updateFilm(Film film) {
+    public void updateObject(Film film) {
         if (!(films.containsKey(film.getId()))) {
             log.warn("ValidationException: объекта нет в списке");
             throw new ValidationException("фильм не найден", NOT_FOUND);
@@ -68,19 +69,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getAllFilms() {
+    public List<Film> getAllObjects() {
         List<Film> filmsList = new ArrayList<Film>(films.values());
         log.info("список фильмов отправлен");
         return filmsList;
     }
 
     @Override
-    public void deleteFilm(int id) {
+    public void deleteObject(int id) {
         films.remove(id);
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getObjectById(int id) {
         if (films.get(id) == null) {
             log.warn("ValidationException: объекта нет в списке");
             throw new ValidationException("Фильм с ID " + id + " не найден", NOT_FOUND);
@@ -93,6 +94,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public HashMap<Integer, Film> getFilms() {
         return films;
+    }
+
+    @Override
+    public void addLike(int userId, int filmId) {
+
     }
 }
 

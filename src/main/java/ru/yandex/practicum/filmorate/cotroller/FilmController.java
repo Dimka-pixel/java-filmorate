@@ -43,8 +43,7 @@ public class FilmController {
     @PostMapping("/films")
     public Film addFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос POST/films");
-        manager.addFilm(film);
-        return film;
+        return manager.getFilmById(manager.addFilm(film));
     }
 
     @PutMapping("/films")

@@ -2,12 +2,13 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage.UserStorage;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -18,11 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FilmServiceManagerTest {
     private FilmServiceManager manager;
     private FilmStorage filmStorage;
+
+    @Autowired
+    @Qualifier("memory")
     private UserStorage userStorage;
 
     @BeforeEach
     void beforeAll() {
-        userStorage = new InMemoryUserStorage();
         filmStorage = new InMemoryFilmStorage();
         manager = new FilmServiceManager(filmStorage, userStorage);
     }
@@ -50,7 +53,7 @@ class FilmServiceManagerTest {
 
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.addFilm(film));
-        assertEquals("дата релиза не может быть ранее 28 декабря 1895", exception.getErrorMessage());
+        assertEquals("Дата релиза не может быть ранее 28 декабря 1895", exception.getErrorMessage());
     }
 
     @Test

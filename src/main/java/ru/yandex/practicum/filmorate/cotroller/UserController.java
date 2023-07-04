@@ -50,8 +50,8 @@ public class UserController {
     @PostMapping("/users")
     public User addUser(@Valid @RequestBody User user) {
         log.info("Получен запрос POST/users");
-        manager.addUser(user);
-        return user;
+
+        return manager.getUserById(manager.addUser(user));
     }
 
     @PutMapping("/users")
