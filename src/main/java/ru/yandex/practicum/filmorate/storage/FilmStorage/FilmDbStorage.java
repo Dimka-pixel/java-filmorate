@@ -3,26 +3,24 @@ package ru.yandex.practicum.filmorate.storage.FilmStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.storage.CrudStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage.GenresRawMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
-@Component("FilmDb")
-@Primary
-public class FilmDbStorage implements FilmStorage {
+@Repository("FilmDb")
+public class FilmDbStorage implements CrudStorage<Film> {
 
     private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
 
@@ -30,16 +28,8 @@ public class FilmDbStorage implements FilmStorage {
 
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate template) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @Override
-    public void addLike(int userId, int filmId) {
-        String sqlLike = "insert into user_like(user_id, film_id) " +
-                "values(?,?)";
-        jdbcTemplate.update(sqlLike, userId, filmId);
-
     }
 
     @Override
@@ -154,22 +144,18 @@ public class FilmDbStorage implements FilmStorage {
                     "f.description, " +
                     "f.duration, " +
                     "m.mpa_name, " +
+                    "m.mpa_id " +
                     "FROM film AS f " +
                     "LEFT OUTER JOIN film_mpa AS m ON f.mpa_id = m.mpa_id " +
                     "WHERE f.film_id = ?";
             Film film = jdbcTemplate.queryForObject(sqlSelect, new FilmRawMapper(), id);
-            String sqlGenres = "SELECT g.genre_name " +
+            String sqlGenres = "SELECT g.genre_name, " +
+                    "g.genre_id " +
                     "FROM film_genre " +
                     "LEFT OUTER JOIN genre AS g ON film_genre.genre_id = g.genre_id " +
                     "WHERE film_genre.film_id = " + id;
             ArrayList<Genres> genres = new ArrayList<>(jdbcTemplate.query(sqlGenres, new GenresRawMapper()));
-            genres.sort(new Comparator<Genres>() {
-                @Override
-                public int compare(Genres genre1, Genres genre2) {
-                    return genre1.getId() - genre2.getId();
-                }
-            });
-            film.setGenres(new HashSet<>(genres));
+            film.setGenres(new LinkedHashSet<>(genres));
             String sqlLike = "SELECT user_id " +
                     "FROM user_like " +
                     "WHERE film_id = ?";

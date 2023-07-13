@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.storage.GetFieldStorage;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
+@Repository("MPABean")
 public class MpaDbStorage implements GetFieldStorage<Mpa> {
     private final JdbcTemplate jdbcTemplate;
 
@@ -24,7 +24,7 @@ public class MpaDbStorage implements GetFieldStorage<Mpa> {
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet("SELECT * FROM film_mpa WHERE mpa_id = ? ", id);
         Mpa mpa;
         if (sqlRowSet.next()) {
-            mpa = Mpa.valueOf(sqlRowSet.getString("mpa_name"));
+            mpa = new Mpa(sqlRowSet.getInt("mpa_id"), sqlRowSet.getString("mpa_name"));
         } else {
             throw new ValidationException("Mpa c ID " + id + "не найден", HttpStatus.NOT_FOUND);
         }

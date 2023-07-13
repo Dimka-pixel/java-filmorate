@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.CrudStorage;
+import ru.yandex.practicum.filmorate.storage.FriendStorage.FriendStorage;
 
 import java.time.LocalDate;
 
@@ -14,16 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceManagerTest {
 
+    @Autowired
+    @Qualifier("UserDb")
+    private CrudStorage userStorage;
 
-    private UserServiceManager manager;
+    @Autowired
+    FriendStorage friendStorage;
 
-    private UserStorage userStorage;
+    @Autowired
+    private UserService manager;
 
-    @BeforeEach
-    void beforeEach() {
-        userStorage = new InMemoryUserStorage();
-        manager = new UserServiceManager(userStorage);
-    }
 
     @Test
     void shouldCreateUserIdAndSaveFilmInMap() {

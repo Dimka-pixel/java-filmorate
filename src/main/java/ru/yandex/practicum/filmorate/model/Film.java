@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Film {
     @Size(min = 1, max = 200)
     private String description;
     private Set<Integer> likes;
-    private Set<Genres> genres;
+    private LinkedHashSet<Genres> genres;
     private Mpa mpa;
     private int id;
 

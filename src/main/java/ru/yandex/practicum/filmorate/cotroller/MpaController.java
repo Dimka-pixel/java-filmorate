@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.MpaServiceManager;
+import ru.yandex.practicum.filmorate.service.MpaService;
 
 import java.util.List;
 
@@ -16,15 +16,15 @@ public class MpaController {
 
     private final Logger log = LoggerFactory.getLogger(MpaController.class);
 
-    private final MpaServiceManager manager;
+    private final MpaService manager;
 
-    public MpaController(MpaServiceManager manager) {
+    public MpaController(MpaService manager) {
         this.manager = manager;
     }
 
     @GetMapping("/mpa/{id}")
     public Mpa getMpa(@PathVariable Integer id) {
-        log.info("получен запрос GET/Mpa/" + id);
+        log.info("получен запрос GET/Mpa/{}", id);
         return manager.getMpa(id);
 
     }

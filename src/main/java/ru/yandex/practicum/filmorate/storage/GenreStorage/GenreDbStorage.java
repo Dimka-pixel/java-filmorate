@@ -9,13 +9,14 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.storage.GetFieldStorage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@Repository
-public class GenreDbStorage implements GenreStorage {
+@Repository("genreBean")
+public class GenreDbStorage implements GetFieldStorage<Genres> {
 
     private final Logger log = LoggerFactory.getLogger(GenreDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
@@ -30,7 +31,7 @@ public class GenreDbStorage implements GenreStorage {
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("SELECT * FROM genre WHERE genre_id = ?", id);
         Genres genre;
         if (rowSet.next()) {
-            genre = Genres.valueOf(rowSet.getString("genre_name"));
+            genre = new Genres(rowSet.getInt("genre_id"), rowSet.getString("genre_name"));
         } else {
             throw new ValidationException("Genre c ID" + id + "не найден", HttpStatus.NOT_FOUND);
         }

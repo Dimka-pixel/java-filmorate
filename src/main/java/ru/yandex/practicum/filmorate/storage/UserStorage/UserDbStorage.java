@@ -1,15 +1,15 @@
 package ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.CrudStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-@Component("db")
-@Primary
-public class UserDbStorage implements UserStorage {
+@Repository("UserDb")
+public class UserDbStorage implements CrudStorage<User> {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -131,20 +130,4 @@ public class UserDbStorage implements UserStorage {
 
     }
 
-    @Override
-    public void addFriend(int userId, int friendId) {
-        SqlRowSet rowSetUser = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE users_id = ? ", userId);
-        SqlRowSet rowSetFriend = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE users_id = ? ", friendId);
-        if (rowSetUser.next()) {
-            if (rowSetFriend.next()) {
-                String sqlAddFriend = "INSERT into user_friend(user_id, friend_id) " +
-                        "values(?, ?) ";
-                jdbcTemplate.update(sqlAddFriend, userId, friendId);
-            } else {
-                throw new ValidationException("user c ID " + friendId + " не найден", HttpStatus.NOT_FOUND);
-            }
-        } else {
-            throw new ValidationException("user c ID " + userId + " не найден", HttpStatus.NOT_FOUND);
-        }
-    }
 }

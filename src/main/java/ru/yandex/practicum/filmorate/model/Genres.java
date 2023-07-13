@@ -1,35 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum Genres {
-    COMEDY(1, "Комедия"),
-    DRAMA(2, "Драма"),
-    CARTOON(3, "Мультфильм"),
-    THRILLER(4, "Триллер"),
-    DOCUMENTARY(5, "Документальный"),
-    ACTION(6, "Боевик");
 
-    private final int id;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Genres {
 
-    private final String name;
+    private int id;
 
-    Genres(int id, String name) {
-        this.name = name;
-        this.id = id;
-    }
+    private String name;
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return this.name();
-    }
 }

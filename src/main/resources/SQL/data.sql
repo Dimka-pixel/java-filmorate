@@ -1,11 +1,2 @@
-INSERT INTO film_mpa(mpa_id,mpa_name) VALUES (1, 'G')
-INSERT INTO film_mpa(mpa_id,mpa_name) VALUES(2, 'PG' )
-INSERT INTO film_mpa(mpa_id,mpa_name) VALUES(3, 'PG13')
-INSERT INTO film_mpa(mpa_id,mpa_name) VALUES(4, 'R')
-INSERT INTO film_mpa(mpa_id,mpa_name) VALUES(5, 'NC17')
-INSERT INTO genre(genre_id,genre_name) VALUES(2, 'DRAMA')
-INSERT INTO genre(genre_id,genre_name) VALUES(1, 'COMEDY' )
-INSERT INTO genre(genre_id,genre_name) VALUES(4, 'THRILLER')
-INSERT INTO genre(genre_id,genre_name) VALUES(6, 'ACTION')
-INSERT INTO genre(genre_id,genre_name) VALUES(5, 'DOCUMENTARY')
-INSERT INTO genre(genre_id,genre_name) VALUES(3, 'CARTOON')
+MERGE INTO film_mpa(mpa_id,mpa_name) VALUES (1, 'G'),(2, 'PG' ),(3, 'PG-13'),(4, 'R'),(5, 'NC-17');
+MERGE INTO genre(genre_id,genre_name) VALUES(2, 'Драма'),(1, 'Комедия' ),(4, 'Триллер'),(6, 'Боевик'),(5, 'Документальный'),(3, 'Мультфильм');
