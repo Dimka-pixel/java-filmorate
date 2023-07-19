@@ -7,6 +7,9 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Repository
@@ -40,6 +43,16 @@ public class LikeStorage {
             String sqlDeleteLike = "DELETE FROM user_like WHERE user_id = ? AND film_id = ?";
             jdbcTemplate.update(sqlDeleteLike, userId, filmId);
         }
+    }
+
+    public List<Integer> getTopFilmForLikes() {
+        String sqlGetTop = "SELECT film_id " +
+                "FROM user_like " +
+                "GROUP BY film_id " +
+                "ORDER BY count(user_id) DESC " +
+                "LIMIT 10";
+        ArrayList<Integer> topFilm = new ArrayList<>(jdbcTemplate.queryForList(sqlGetTop, Integer.class));
+        return topFilm;
     }
 
 

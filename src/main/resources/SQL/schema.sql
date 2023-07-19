@@ -41,8 +41,9 @@
         friend_id         INTEGER REFERENCES users (users_id) ON DELETE CASCADE
     );
 
+     CREATE UNIQUE INDEX IF NOT EXISTS USER_EMAIL_UINDEX on USERS(email);
 
-
+     CREATE UNIQUE INDEX IF NOT EXISTS USER_LOGIN_UINDEX on USERS(user_login)
 
 
 

@@ -39,9 +39,6 @@ public class FilmService {
         if (film != null && film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             log.warn("ValidationException: Не корректная дата релиза");
             throw new ValidationException("Дата релиза не может быть ранее 28 декабря 1895", BAD_REQUEST);
-        } else if (film != null && film.getDuration().toMinutes() <= 0) {
-            log.warn("Продолжительность фильма отрицательная");
-            throw new ValidationException("Продолжительность не может быть отрицательной", BAD_REQUEST);
         }
         int filmId = filmStorage.addObject(film);
         return (Film) filmStorage.getObjectById(filmId);
@@ -51,9 +48,6 @@ public class FilmService {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             log.warn("ValidationException: Не корректная дата релиза");
             throw new ValidationException("Дата релиза не может быть ранее 28 декабря 1895", BAD_REQUEST);
-        } else if (film.getDuration().toMinutes() <= 0) {
-            log.warn("Продолжительность фильма отрицательная");
-            throw new ValidationException("Продолжительность не может быть отрицательной", BAD_REQUEST);
         }
         filmStorage.updateObject(film);
         return (Film) filmStorage.getObjectById(film.getId());
@@ -76,37 +70,27 @@ public class FilmService {
     }
 
     public List<Film> getTopFilms(Integer count) {
-        List<Film> topFilms = getAllFilms();
-        if (topFilms.size() <= 1) {
-            log.info("Отправлен список из " + topFilms.size() + " TOP фильмов");
-            return topFilms;
+        ArrayList<Integer> topFilms = new ArrayList<>(likeStorage.getTopFilmForLikes());
+        if (topFilms.isEmpty()) {
+            return getAllFilms();
         }
-        topFilms.sort((Film film1, Film film2) -> {
-            if (film1.getLikes().size() == 0) {
-                return 1;
-            }
-            if (film2.getLikes().size() == 0) {
-                return -1;
-            }
-            return film1.getLikes().size() - film2.getLikes().size();
-        });
-        List<Film> newTopFilms = new ArrayList<>();
+        ArrayList<Film> films = new ArrayList<>();
         if (count == null) {
             if (topFilms.size() < 10) {
-                for (int i = 0; i < topFilms.size(); i++) {
-                    newTopFilms.add(topFilms.get(i));
+                for (Integer filmID : topFilms) {
+                    films.add(getFilmById(filmID));
                 }
                 log.info("Отправлен список из " + topFilms.size() + " TOP фильмов");
             } else {
                 for (int i = 0; i < 10; i++) {
-                    newTopFilms.add(topFilms.get(i));
+                    films.add(getFilmById(topFilms.get(i)));
                 }
                 log.info("Отправлен список из 10 TOP фильмов");
             }
         } else {
             if (count <= topFilms.size() && count > 0) {
                 for (int i = 0; i < count; i++) {
-                    newTopFilms.add(topFilms.get(i));
+                    films.add(getFilmById(topFilms.get(i)));
                 }
                 log.info("Отправлен список из " + count + " TOP фильмов");
             } else {
@@ -114,7 +98,7 @@ public class FilmService {
                 throw new ValidationException("Не корректное количество фильмов count: " + count, BAD_REQUEST);
             }
         }
-        return newTopFilms;
+        return films;
     }
 
     public Film putLike(int userId, int filmId) {

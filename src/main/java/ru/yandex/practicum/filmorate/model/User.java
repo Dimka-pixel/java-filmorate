@@ -8,9 +8,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Data
 public class User {
@@ -24,7 +22,7 @@ public class User {
     private LocalDate birthday;
     private int id;
     private String name;
-    private Set<Integer> friends = new HashSet<>();
+    //private Set<Integer> friends = new HashSet<>();
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

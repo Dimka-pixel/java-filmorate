@@ -51,8 +51,7 @@ public class FilmController {
     @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос PUT/films");
-        manager.updateFilm(film);
-        return film;
+        return manager.updateFilm(film);
     }
 
     @PutMapping("/films/{id}/like/{userId}")

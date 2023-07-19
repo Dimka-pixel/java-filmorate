@@ -17,7 +17,9 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage.GenresRawMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 @Repository("FilmDb")
 public class FilmDbStorage implements CrudStorage<Film> {
@@ -59,24 +61,6 @@ public class FilmDbStorage implements CrudStorage<Film> {
             });
         }
 
-        if (film.getLikes() != null) {
-
-            String sqlQueryLikes = "insert into user_like(user_id, film_id) " +
-                    "values(?,?)";
-            List<Integer> likes = new ArrayList<>(film.getLikes());
-            jdbcTemplate.batchUpdate(sqlQueryLikes, new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    ps.setInt(1, likes.get(i));
-                    ps.setLong(2, filmId);
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return likes.size();
-                }
-            });
-        }
         return (int) filmId;
     }
 
@@ -117,18 +101,6 @@ public class FilmDbStorage implements CrudStorage<Film> {
                             film.getId());
                 }
             }
-            if (film.getLikes() != null) {
-                for (Integer userId : film.getLikes()) {
-                    String sqlDeleteLikes = "delete from film_genre where film_id = ?";
-                    jdbcTemplate.update(sqlDeleteLikes, film.getId());
-                    String sqlQueryLikes = "insert into user_like(film_id, user_id)" +
-                            "values(?,?)";
-                    jdbcTemplate.update(sqlQueryLikes,
-                            film.getId(),
-                            userId);
-
-                }
-            }
         } else {
             throw new ValidationException("Фильм с ID " + film.getId() + " не найден", HttpStatus.NOT_FOUND);
         }
@@ -156,11 +128,6 @@ public class FilmDbStorage implements CrudStorage<Film> {
                     "WHERE film_genre.film_id = " + id;
             ArrayList<Genres> genres = new ArrayList<>(jdbcTemplate.query(sqlGenres, new GenresRawMapper()));
             film.setGenres(new LinkedHashSet<>(genres));
-            String sqlLike = "SELECT user_id " +
-                    "FROM user_like " +
-                    "WHERE film_id = ?";
-            Set<Integer> like = new HashSet<>(jdbcTemplate.queryForList(sqlLike, Integer.class, id));
-            film.setLikes(like);
             return film;
         } else {
             throw new ValidationException("Film с ID " + id + " не найден", HttpStatus.NOT_FOUND);
