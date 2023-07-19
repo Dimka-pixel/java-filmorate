@@ -9,7 +9,7 @@ public interface CrudStorage<T> {
 
     T getObjectById(int id);
 
-    List<T>getAllObjects();
+    List<T> getAllObjects();
 
     void deleteObject(int id);
 }
