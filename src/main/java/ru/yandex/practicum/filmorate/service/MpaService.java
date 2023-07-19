@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 public class MpaService {
     private final GetFieldStorage genreStorage;
+
     @Autowired
     public MpaService(@Qualifier("MPABean") GetFieldStorage genreStorage) {
         this.genreStorage = genreStorage;
