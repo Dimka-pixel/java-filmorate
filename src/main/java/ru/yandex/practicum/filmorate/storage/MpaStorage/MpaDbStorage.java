@@ -36,8 +36,8 @@ public class MpaDbStorage implements GetFieldStorage<Mpa> {
         ArrayList<Mpa> allAllMpa = new ArrayList<>();
         String sqlFilmForList = "SELECT mpa_id FROM film_mpa";
         jdbcTemplate.queryForList(sqlFilmForList, Integer.class);
-        ArrayList<Integer> IdGenres = new ArrayList<>(jdbcTemplate.queryForList(sqlFilmForList, Integer.class));
-        for (Integer id : IdGenres) {
+        ArrayList<Integer> idGenres = new ArrayList<>(jdbcTemplate.queryForList(sqlFilmForList, Integer.class));
+        for (Integer id : idGenres) {
             allAllMpa.add(getById(id));
         }
         return allAllMpa;
