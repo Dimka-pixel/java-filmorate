@@ -22,15 +22,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 @Repository("FilmDb")
-public class FilmDbStorage implements CrudStorage<Film> {
+public class FilmStorage implements CrudStorage<Film> {
 
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
+    private final Logger log = LoggerFactory.getLogger(FilmStorage.class);
 
     private final JdbcTemplate jdbcTemplate;
 
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
+    public FilmStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
