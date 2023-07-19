@@ -44,8 +44,8 @@ public class GenreDbStorage implements GetFieldStorage<Genres> {
         ArrayList<Genres> allGenres = new ArrayList<>();
         String sqlFilmForList = "SELECT genre_id FROM genre";
         jdbcTemplate.queryForList(sqlFilmForList, Integer.class);
-        ArrayList<Integer> IdGenres = new ArrayList<>(jdbcTemplate.queryForList(sqlFilmForList, Integer.class));
-        for (Integer id : IdGenres) {
+        ArrayList<Integer> idGenres = new ArrayList<>(jdbcTemplate.queryForList(sqlFilmForList, Integer.class));
+        for (Integer id : idGenres) {
             allGenres.add(getById(id));
         }
         allGenres.sort(new Comparator<Genres>() {
