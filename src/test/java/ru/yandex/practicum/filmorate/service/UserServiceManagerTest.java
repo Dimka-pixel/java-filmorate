@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FriendStorage.FriendStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage.UserStorage;
 
 import java.time.LocalDate;
 
@@ -14,15 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceManagerTest {
-    private UserServiceManager manager;
+
+    @Autowired
     private UserStorage userStorage;
 
-    @BeforeEach
     @Autowired
-    void beforeEach() {
-        userStorage = new InMemoryUserStorage();
-        manager = new UserServiceManager(userStorage);
-    }
+    FriendStorage friendStorage;
+
+    @Autowired
+    private UserService manager;
+
 
     @Test
     void shouldCreateUserIdAndSaveFilmInMap() {
@@ -47,12 +48,28 @@ class UserServiceManagerTest {
         assertEquals("login", user.getName());
     }
 
-    @Test
-    void shouldAssignValueLoginForNameIfNameIsEmpty() {
-        User user = new User();
+    private User user;
+
+    private User user2;
+
+    @BeforeEach
+    private void beforeEach() {
+        user = new User();
         user.setEmail("qwerty@mail.ru");
         user.setLogin("login");
         user.setBirthday(LocalDate.of(1987, 4, 9));
+        user.setName("Name");
+
+        user2 = new User();
+        user2.setEmail("qwerty@mail.ru");
+        user2.setLogin("login");
+        user2.setBirthday(LocalDate.of(1987, 4, 9));
+        user2.setName("Update");
+
+    }
+
+    @Test
+    void shouldAssignValueLoginForNameIfNameIsEmpty() {
         user.setName("");
         manager.addUser(user);
 
@@ -61,17 +78,8 @@ class UserServiceManagerTest {
 
     @Test
     void shouldUpdateUser() {
-        User user = new User();
-        user.setEmail("qwerty@mail.ru");
-        user.setLogin("login");
-        user.setBirthday(LocalDate.of(1987, 4, 9));
         user.setName("Name");
         manager.addUser(user);
-        User user2 = new User();
-        user2.setEmail("qwerty@mail.ru");
-        user2.setLogin("login");
-        user2.setBirthday(LocalDate.of(1987, 4, 9));
-        user2.setName("Update");
         user2.setId(1);
         manager.updateUser(user2);
 
@@ -81,11 +89,6 @@ class UserServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionForUserUpdateIfMapIsEmpty() {
-        User user = new User();
-        user.setEmail("qwerty@mail.ru");
-        user.setLogin("login");
-        user.setBirthday(LocalDate.of(1987, 4, 9));
-        user.setName("Name");
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.updateUser(user));
         assertEquals("User с ID: 0 не найден", exception.getErrorMessage());
@@ -93,17 +96,7 @@ class UserServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionForUserUpdateIfIdIncorrect() {
-        User user = new User();
-        user.setEmail("qwerty@mail.ru");
-        user.setLogin("login");
-        user.setBirthday(LocalDate.of(1987, 4, 9));
-        user.setName("Name");
         manager.addUser(user);
-        User user2 = new User();
-        user2.setEmail("qwerty@mail.ru");
-        user2.setLogin("login");
-        user2.setBirthday(LocalDate.of(1987, 4, 9));
-        user2.setName("Update");
         user2.setId(999);
 
         final ValidationException exception = assertThrows(ValidationException.class,
@@ -113,16 +106,7 @@ class UserServiceManagerTest {
 
     @Test
     void shouldUpdateUserAssignValueLoginForNameIfNameEqualNull() {
-        User user = new User();
-        user.setEmail("qwerty@mail.ru");
-        user.setLogin("login");
-        user.setBirthday(LocalDate.of(1987, 4, 9));
-        user.setName("Name");
         manager.addUser(user);
-        User user2 = new User();
-        user2.setEmail("qwerty@mail.ru");
-        user2.setLogin("login");
-        user2.setBirthday(LocalDate.of(1987, 4, 9));
         user2.setId(1);
         manager.updateUser(user2);
 
@@ -131,16 +115,7 @@ class UserServiceManagerTest {
 
     @Test
     void shouldUpdateUserAssignValueLoginForNameIfNameIsEmpty() {
-        User user = new User();
-        user.setEmail("qwerty@mail.ru");
-        user.setLogin("login");
-        user.setBirthday(LocalDate.of(1987, 4, 9));
-        user.setName("Name");
         manager.addUser(user);
-        User user2 = new User();
-        user2.setEmail("qwerty@mail.ru");
-        user2.setLogin("login");
-        user2.setBirthday(LocalDate.of(1987, 4, 9));
         user2.setName("");
         user2.setId(1);
         manager.updateUser(user2);
