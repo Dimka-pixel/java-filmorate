@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.CrudStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage.UserStorage;
 
 import java.time.LocalDate;
 
@@ -17,21 +18,35 @@ class FilmServiceManagerTest {
     private FilmService manager;
 
     @Autowired
-    @Qualifier("FilmDb")
-    private CrudStorage filmStorage;
+    private FilmStorage filmStorage;
 
     @Autowired
-    @Qualifier("UserDb")
-    private CrudStorage userStorage;
+    private UserStorage userStorage;
 
+    private Film film;
 
-    @Test
-    void shouldCreateFilmIdAndSaveFilmInMap() {
-        Film film = new Film();
+    private Film film2;
+
+    @BeforeEach
+    private void beforeEach() {
+        film = new Film();
         film.setName("Боевик");
         film.setReleaseDate(LocalDate.of(1900, 2, 3));
         film.setDuration(100);
         film.setDescription("Интересный");
+
+        film2 = new Film();
+        film2.setName("Update");
+        film2.setReleaseDate(LocalDate.of(1900, 2, 3));
+        film2.setDuration(100);
+        film2.setDescription("Интересный");
+
+    }
+
+
+    @Test
+    void shouldCreateFilmIdAndSaveFilmInMap() {
+
         manager.addFilm(film);
 
         assertEquals(1, film.getId());
@@ -40,11 +55,7 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionIfDateReleaseBefore18951228() {
-        Film film = new Film();
-        film.setName("Боевик");
         film.setReleaseDate(LocalDate.of(1800, 2, 3));
-        film.setDuration(100);
-        film.setDescription("Интересный");
 
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.addFilm(film));
@@ -53,11 +64,7 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionIfDurationLessZero() {
-        Film film = new Film();
-        film.setName("Боевик");
-        film.setReleaseDate(LocalDate.of(1900, 2, 3));
         film.setDuration(-100);
-        film.setDescription("Интересный");
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.addFilm(film));
         assertEquals("Продолжительность не может быть отрицательной", exception.getErrorMessage());
@@ -65,17 +72,7 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldUpdateFilm() {
-        Film film = new Film();
-        film.setName("Боевик");
-        film.setReleaseDate(LocalDate.of(1900, 2, 3));
-        film.setDuration(100);
-        film.setDescription("Интересный");
         manager.addFilm(film);
-        Film film2 = new Film();
-        film2.setName("Update");
-        film2.setReleaseDate(LocalDate.of(1900, 2, 3));
-        film2.setDuration(100);
-        film2.setDescription("Интересный");
         film2.setId(1);
         manager.updateFilm(film2);
 
@@ -84,11 +81,6 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionForFilmUpdateIfMapIsEmpty() {
-        Film film = new Film();
-        film.setName("Боевик");
-        film.setReleaseDate(LocalDate.of(1900, 2, 3));
-        film.setDuration(100);
-        film.setDescription("Интересный");
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.updateFilm(film));
         assertEquals("фильм не найден", exception.getErrorMessage());
@@ -96,17 +88,8 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionForUpdateFilmIfDateReleaseBefore18951228() {
-        Film film = new Film();
-        film.setName("Боевик");
-        film.setReleaseDate(LocalDate.of(1900, 2, 3));
-        film.setDuration(100);
-        film.setDescription("Интересный");
         manager.addFilm(film);
-        Film film2 = new Film();
-        film2.setName("Uodate");
         film2.setReleaseDate(LocalDate.of(1800, 2, 3));
-        film2.setDuration(100);
-        film2.setDescription("Интересный");
         film2.setId(1);
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.updateFilm(film2));
@@ -115,17 +98,8 @@ class FilmServiceManagerTest {
 
     @Test
     void shouldReturnValidationExceptionForUpdateFilmIfDurationLessZero() {
-        Film film = new Film();
-        film.setName("Боевик");
-        film.setReleaseDate(LocalDate.of(1900, 2, 3));
-        film.setDuration(100);
-        film.setDescription("Интересный");
         manager.addFilm(film);
-        Film film2 = new Film();
-        film2.setName("Update");
-        film2.setReleaseDate(LocalDate.of(1900, 2, 3));
         film2.setDuration(-100);
-        film2.setDescription("Интересный");
         film2.setId(1);
         final ValidationException exception = assertThrows(ValidationException.class,
                 () -> manager.updateFilm(film2));

@@ -22,7 +22,6 @@ public class User {
     private LocalDate birthday;
     private int id;
     private String name;
-    //private Set<Integer> friends = new HashSet<>();
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

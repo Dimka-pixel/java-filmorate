@@ -1,19 +1,18 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.GetFieldStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage.MpaStorage;
 
 import java.util.List;
 
 @Service
 public class MpaService {
-    private final GetFieldStorage genreStorage;
+    private final MpaStorage genreStorage;
 
     @Autowired
-    public MpaService(@Qualifier("MPABean") GetFieldStorage genreStorage) {
+    public MpaService(MpaStorage genreStorage) {
         this.genreStorage = genreStorage;
     }
 

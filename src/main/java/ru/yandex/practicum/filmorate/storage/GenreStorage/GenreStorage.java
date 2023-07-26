@@ -16,13 +16,13 @@ import java.util.Comparator;
 import java.util.List;
 
 @Repository("genreBean")
-public class GenreDbStorage implements GetFieldStorage<Genres> {
+public class GenreStorage implements GetFieldStorage<Genres> {
 
-    private final Logger log = LoggerFactory.getLogger(GenreDbStorage.class);
+    private final Logger log = LoggerFactory.getLogger(GenreStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+    public GenreStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

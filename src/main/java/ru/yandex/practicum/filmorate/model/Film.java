@@ -18,11 +18,12 @@ public class Film {
     private String name;
     private LocalDate releaseDate;
     @Positive
-    @NotNull
+    @NotBlank
     private int duration;
     @Size(min = 1, max = 200)
     private String description;
     private LinkedHashSet<Genres> genres;
+    @NotNull
     private Mpa mpa;
     private int id;
 

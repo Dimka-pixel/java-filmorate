@@ -3,12 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.CrudStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.LikeStorage.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,17 +19,17 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service("FilmServiceBean")
 public class FilmService {
-    private final CrudStorage filmStorage;
+    private final FilmStorage filmStorage;
 
     private final LikeStorage likeStorage;
 
-    private final CrudStorage userStorage;
+    private final UserStorage userStorage;
 
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
 
     @Autowired
-    public FilmService(@Qualifier("FilmDb") CrudStorage filmStorage, LikeStorage likeStorage,
-                       @Qualifier("UserDb") CrudStorage userStorage) {
+    public FilmService(FilmStorage filmStorage, LikeStorage likeStorage,
+                       UserStorage userStorage) {
         this.filmStorage = filmStorage;
         this.likeStorage = likeStorage;
         this.userStorage = userStorage;

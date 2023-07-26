@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository("UserDb")
-public class UserDbStorage implements CrudStorage<User> {
+public class UserStorage implements CrudStorage<User> {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
+    public UserStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
